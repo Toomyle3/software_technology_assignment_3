@@ -1,0 +1,14 @@
+Macroinvertebrate Classification Report
+======================================
+
+Model Accuracy: 0.7778
+
+                    precision    recall  f1-score   support
+
+Leptophlebiidae sp       0.50      0.50      0.50         2
+        Leuctra sp       0.80      1.00      0.89         4
+        Limnius sp       1.00      0.67      0.80         3
+
+          accuracy                           0.78         9
+         macro avg       0.77      0.72      0.73         9
+      weighted avg       0.80      0.78      0.77         9
