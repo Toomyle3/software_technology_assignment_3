@@ -1,0 +1,83 @@
+import pandas as pd
+
+from config import EDA_OUTPUT_DIR, MODEL_OUTPUT_DIR, REPORT_OUTPUT_DIR
+from services.classifier_service import ClassifierService
+from services.dataset_indexer import DatasetIndexer
+from services.eda_service import EDAService
+from services.image_preprocessor import ImagePreprocessor
+
+
+class WorkflowService:
+    """Coordinate the shared steps used by the batch, GUI, and console apps."""
+
+    def __init__(self) -> None:
+        # Make sure all output folders exist before we start.
+        EDA_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        MODEL_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        REPORT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+        # Build the helper services that do the real work.
+        self.indexer = DatasetIndexer()
+        self.preprocessor = ImagePreprocessor()
+        self.classifier = ClassifierService(
+            preprocessor=self.preprocessor,
+            model_output_dir=MODEL_OUTPUT_DIR,
+            report_output_dir=REPORT_OUTPUT_DIR,
+        )
+
+        # We cache the dataframe so we do not re-scan the dataset every time.
+        self.dataframe: pd.DataFrame | None = None
+        # Track whether the trained model has been loaded into memory.
+        self.model_loaded = False
+
+    def load_dataframe(self) -> pd.DataFrame:
+        """Scan the dataset folder once and reuse the result later."""
+        if self.dataframe is None:
+            self.dataframe = self.indexer.build_dataframe()
+        return self.dataframe
+
+    def show_summary(self) -> dict:
+        """Print and return basic dataset summary numbers."""
+        dataframe = self.load_dataframe()
+        eda = EDAService(dataframe, EDA_OUTPUT_DIR)
+        summary = eda.build_summary()
+        print("\nDataset summary:")
+        for key, value in summary.items():
+            print(f"  {key}: {value}")
+        return summary
+
+    def generate_eda(self) -> dict:
+        """Run all EDA steps and save charts to outputs/eda/."""
+        dataframe = self.load_dataframe()
+        eda = EDAService(dataframe, EDA_OUTPUT_DIR)
+        summary = eda.generate_all()
+        print(f"\nEDA finished. Files saved in {EDA_OUTPUT_DIR}")
+        return summary
+
+    def train_model(self) -> dict:
+        """Train the classifier on the current dataset."""
+        dataframe = self.load_dataframe()
+        results = self.classifier.train(dataframe)
+        self.model_loaded = True
+        print(f"\nTraining accuracy: {results['accuracy']:.4f}")
+        print(results["report"])
+        return results
+
+    def load_model(self) -> None:
+        """Load the trained model from disk if it has not been loaded yet."""
+        if self.model_loaded:
+            return
+        self.classifier.load_model()
+        self.model_loaded = True
+
+    def predict_image(self, file_path: str) -> str:
+        """Predict the class for a single image using the trained model."""
+        # Make sure the model is loaded before predicting.
+        self.load_model()
+        return self.classifier.predict_image(file_path)
+
+    def run_full_pipeline(self) -> None:
+        """Run the default Stage 1 + Stage 2 workflow in one call."""
+        self.show_summary()
+        self.generate_eda()
+        self.train_model()
