@@ -4,13 +4,6 @@ This document records the manual tests performed on the
 Macroinvertebrate Image Analysis System. We did not use a formal testing
 framework. Instead we ran each scenario by hand and noted the outcome.
 
-## Test Environment
-
-- Python 3.14
-- macOS (Darwin 25.2)
-- Dataset: `data/raw/macro_small/` (3 classes, 42 images)
-- Run from inside the `src/` folder
-
 ## Test Scenarios
 
 | # | Scenario | Input / Action | Expected Result | Actual Result | Status |
