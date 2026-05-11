@@ -1,3 +1,6 @@
+"""Batch entry script: runs Stage 1 EDA + Stage 2 training end-to-end
+without any user interface."""
+
 from services.workflow_service import WorkflowService
 
 

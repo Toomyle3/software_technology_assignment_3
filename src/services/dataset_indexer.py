@@ -1,3 +1,6 @@
+"""Dataset indexing service. Walks the raw image folders and builds an
+ImageRecord per image (and the pandas DataFrame used by every later stage)."""
+
 from pathlib import Path
 
 import cv2

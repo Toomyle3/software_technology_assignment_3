@@ -1,3 +1,7 @@
+"""Stage 1 EDA service. Builds five analyses from the indexed dataframe:
+class imbalance, image dimensions, pixel intensity, sample grid, and
+noisy-image detection."""
+
 from pathlib import Path
 
 import cv2

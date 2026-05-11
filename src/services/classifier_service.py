@@ -1,3 +1,6 @@
+"""Stage 2 classification service: trains, evaluates, saves, and reuses
+the Random Forest model that predicts the macroinvertebrate class."""
+
 from pathlib import Path
 
 import joblib
@@ -9,13 +12,15 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 
+from services.image_preprocessor import ImagePreprocessor
+
 
 class ClassifierService:
     """Train, evaluate, save, and reuse the macroinvertebrate classifier."""
 
     def __init__(
         self,
-        preprocessor,
+        preprocessor: ImagePreprocessor,
         model_output_dir: Path,
         report_output_dir: Path,
     ) -> None:

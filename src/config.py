@@ -1,3 +1,6 @@
+"""Project-wide configuration: folder paths and shared constants used
+across the indexer, EDA, classifier, and GUI."""
+
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent

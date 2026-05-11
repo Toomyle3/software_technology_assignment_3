@@ -1,3 +1,5 @@
+"""Stage 3 entry script: launches the Tkinter desktop application."""
+
 from services.gui_app import MacroinvertebrateApp
 from services.workflow_service import WorkflowService
 

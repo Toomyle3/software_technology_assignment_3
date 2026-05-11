@@ -1,3 +1,5 @@
+"""Stage 3 entry script: launches the menu-driven console application."""
+
 from services.console_app import ConsoleApp
 from services.workflow_service import WorkflowService
 

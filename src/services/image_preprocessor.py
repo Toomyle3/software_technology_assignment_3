@@ -1,3 +1,6 @@
+"""Image preprocessing helper used by both training and prediction:
+read → grayscale → resize → normalise → flatten."""
+
 import cv2
 import numpy as np
 

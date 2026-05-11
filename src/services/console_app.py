@@ -1,7 +1,13 @@
+"""Stage 3 menu-driven console application. Same actions as the GUI but
+runs entirely in the terminal — useful when a display is not available."""
+
+from services.workflow_service import WorkflowService
+
+
 class ConsoleApp:
     """Simple menu-driven console version of the project."""
 
-    def __init__(self, workflow) -> None:
+    def __init__(self, workflow: WorkflowService) -> None:
         # The workflow service knows how to do every action.
         self.workflow = workflow
 

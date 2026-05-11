@@ -1,3 +1,6 @@
+"""Stage 3 Tkinter desktop application. Wraps the WorkflowService and
+exposes every workflow action through buttons, log area, and status bar."""
+
 import subprocess
 import sys
 import tkinter as tk
@@ -7,12 +10,13 @@ from tkinter import filedialog, messagebox, scrolledtext
 from PIL import Image, ImageTk
 
 from config import EDA_OUTPUT_DIR, REPORT_OUTPUT_DIR
+from services.workflow_service import WorkflowService
 
 
 class MacroinvertebrateApp:
     """Desktop GUI for the Macroinvertebrate Image Analysis System."""
 
-    def __init__(self, workflow) -> None:
+    def __init__(self, workflow: WorkflowService) -> None:
         # The workflow service does all of the real work (EDA, training, predict).
         self.workflow = workflow
 

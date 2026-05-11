@@ -1,3 +1,6 @@
+"""Data classes used across the project. ImageRecord is the simple
+value object that represents one indexed image."""
+
 from dataclasses import dataclass
 from pathlib import Path
 

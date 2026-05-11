@@ -1,3 +1,7 @@
+"""Workflow coordinator. Wires the indexer, preprocessor, classifier and
+EDA service together and exposes one tidy API to every entry script
+(batch, GUI, console)."""
+
 import pandas as pd
 
 from config import EDA_OUTPUT_DIR, MODEL_OUTPUT_DIR, REPORT_OUTPUT_DIR
