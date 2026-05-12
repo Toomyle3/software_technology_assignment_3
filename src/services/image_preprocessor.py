@@ -1,5 +1,11 @@
-"""Image preprocessing helper used by both training and prediction:
-read → grayscale → resize → normalise → flatten."""
+"""
+*******************************
+Author:
+u3332252 Assessment_3_group_4 12/05/2024
+Question:
+Stage 2: Image Preprocessor
+*******************************
+"""
 
 import cv2
 import numpy as np

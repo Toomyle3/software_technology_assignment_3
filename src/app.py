@@ -1,4 +1,12 @@
-"""Stage 3 entry script: launches the Tkinter desktop application."""
+"""
+*******************************
+Author:
+u3290048 Assessment_3_group_4 12/05/2024
+Question:
+Stage 3: Entry script: launches the Tkinter desktop application.
+*******************************
+"""
+
 
 from services.gui_app import MacroinvertebrateApp
 from services.workflow_service import WorkflowService

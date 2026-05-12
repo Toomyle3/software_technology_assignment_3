@@ -1,5 +1,12 @@
-"""Stage 3 menu-driven console application. Same actions as the GUI but
-runs entirely in the terminal — useful when a display is not available."""
+"""
+*******************************
+Author:
+u3290048 Assessment_3_group_4 12/05/2024
+Question:
+Stage 3: menu-driven console application. Same actions as the GUI but
+runs entirely in the terminal — useful when a display is not available.
+*******************************
+"""
 
 from services.workflow_service import WorkflowService
 

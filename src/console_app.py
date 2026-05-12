@@ -1,4 +1,11 @@
-"""Stage 3 entry script: launches the menu-driven console application."""
+"""
+*******************************
+Author:
+u3290048 Assessment_3_group_4 12/05/2024
+Question:
+Stage 3: Entry script: launches the menu-driven console application.
+*******************************
+"""
 
 from services.console_app import ConsoleApp
 from services.workflow_service import WorkflowService

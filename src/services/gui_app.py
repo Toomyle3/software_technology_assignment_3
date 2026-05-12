@@ -1,5 +1,12 @@
-"""Stage 3 Tkinter desktop application. Wraps the WorkflowService and
-exposes every workflow action through buttons, log area, and status bar."""
+"""
+*******************************
+Author:
+u3290048 Assessment_3_group_4 12/05/2024
+Question:
+Stage 3: Tkinter desktop application. That wraps the WorkflowService and
+exposes every workflow action through buttons, log area, and status bar.
+*******************************
+"""
 
 import subprocess
 import sys

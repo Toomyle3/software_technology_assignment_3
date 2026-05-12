@@ -1,5 +1,12 @@
-"""Dataset indexing service. Walks the raw image folders and builds an
-ImageRecord per image (and the pandas DataFrame used by every later stage)."""
+"""
+*******************************
+Author:
+u3332252 Assessment_3_group_4 12/05/2024
+Question:
+Stage 2: Dataset indexing service. Walks the raw image folders and builds an
+ImageRecord per image (and the pandas DataFrame used by every later stage).
+*******************************
+"""
 
 from pathlib import Path
 

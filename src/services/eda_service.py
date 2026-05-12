@@ -1,6 +1,13 @@
-"""Stage 1 EDA service. Builds five analyses from the indexed dataframe:
+"""
+*******************************
+Author:
+u3214187 Assessment_3_group_4 12/05/2024
+Question:
+Stage 1: EDA service. Builds five analyses from the indexed dataframe:
 class imbalance, image dimensions, pixel intensity, sample grid, and
-noisy-image detection."""
+noisy-image detection.
+*******************************
+"""
 
 from pathlib import Path
 

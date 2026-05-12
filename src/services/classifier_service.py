@@ -1,5 +1,12 @@
-"""Stage 2 classification service: trains, evaluates, saves, and reuses
-the Random Forest model that predicts the macroinvertebrate class."""
+"""
+*******************************
+Author:
+u3332252 Assessment_3_group_4 12/05/2024
+Question:
+Stage 2: Classification service: trains, evaluates, saves, and reuses
+the Random Forest model that predicts the macroinvertebrate class.
+*******************************
+"""
 
 from pathlib import Path
 

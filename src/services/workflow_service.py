@@ -1,6 +1,12 @@
-"""Workflow coordinator. Wires the indexer, preprocessor, classifier and
-EDA service together and exposes one tidy API to every entry script
-(batch, GUI, console)."""
+"""
+*******************************
+Author:
+u3290048 Assessment_3_group_4 12/05/2024
+Question:
+Stage 3: Implementation and Deployment
+*******************************
+"""
+
 
 import pandas as pd
 

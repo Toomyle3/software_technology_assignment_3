@@ -1,5 +1,13 @@
-"""Batch entry script: runs Stage 1 EDA + Stage 2 training end-to-end
-without any user interface."""
+"""
+*******************************
+Author:
+u3332252 Assessment_3_group_4 12/05/2024
+u3214187 Assessment_3_group_4 12/05/2024
+Question:
+Stage 1 + 2: Batch entry script: runs Stage 1 EDA + Stage 2 training end-to-end
+without any user interface.
+*******************************
+"""
 
 from services.workflow_service import WorkflowService
 
