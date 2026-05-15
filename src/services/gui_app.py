@@ -319,7 +319,7 @@ class MacroinvertebrateApp:
         self._log(f"\nPredicting {len(file_paths)} image(s)...")
 
         try:
-            results = self.workflow.predict_images(list(file_paths))
+            batch = self.workflow.predict_images(list(file_paths))
         except FileNotFoundError:
             messagebox.showerror(
                 "Model missing",
@@ -332,17 +332,42 @@ class MacroinvertebrateApp:
             self._set_status("prediction failed")
             return
 
+        results = batch["results"]
+        accuracy = batch["accuracy"]
+        batch_cm_path = batch["batch_cm_path"]
+
         # Show each result in the log area and count successes.
         success_count = 0
-        for file_path, prediction in results:
+        for file_path, true_label, prediction in results:
             name = Path(file_path).name
-            self._log(f"  {name}: {prediction}")
+            if true_label is not None:
+                mark = "OK" if true_label == prediction else "MISS"
+                self._log(f"  {name}: {prediction} (truth: {true_label}) [{mark}]")
+            else:
+                self._log(f"  {name}: {prediction}")
             if not prediction.startswith("ERROR:"):
                 success_count += 1
 
-        self.result_label.config(
-            text=f"Predicted {success_count}/{len(results)} images"
-        )
+        if accuracy is not None:
+            self.result_label.config(
+                text=(
+                    f"Predicted {success_count}/{len(results)} images "
+                    f"| batch accuracy: {accuracy:.2%}"
+                )
+            )
+            self._log(f"Batch accuracy: {accuracy:.4f}")
+        else:
+            self.result_label.config(
+                text=f"Predicted {success_count}/{len(results)} images"
+            )
+
+        if batch_cm_path is not None:
+            self._log(f"Batch confusion matrix saved to {batch_cm_path}")
+            self._show_image_window(
+                batch_cm_path,
+                title="Batch Confusion Matrix",
+            )
+
         self._set_status(
             f"batch prediction completed ({success_count}/{len(results)} ok)"
         )
@@ -357,11 +382,15 @@ class MacroinvertebrateApp:
             )
             return
 
-        # Create a small extra window that just shows the image.
-        viewer = tk.Toplevel(self.window)
-        viewer.title("Confusion Matrix")
+        self._show_image_window(matrix_path, title="Confusion Matrix")
+        self._set_status("opened confusion matrix")
 
-        image = Image.open(matrix_path)
+    def _show_image_window(self, image_path, title: str) -> None:
+        """Open a new window that simply displays the given image file."""
+        viewer = tk.Toplevel(self.window)
+        viewer.title(title)
+
+        image = Image.open(image_path)
         image.thumbnail((700, 700))
         photo = ImageTk.PhotoImage(image)
 
@@ -369,8 +398,6 @@ class MacroinvertebrateApp:
         # Keep a reference so the image is not garbage-collected.
         label.image = photo
         label.pack(padx=10, pady=10)
-
-        self._set_status("opened confusion matrix")
 
     # --------------------------------------------------------------------
     # Run loop

@@ -164,3 +164,35 @@ class ClassifierService:
         prediction = self.model.predict(image_features)[0]
 
         return str(prediction)
+
+    def save_batch_confusion_matrix(
+        self,
+        y_true: list[str],
+        y_pred: list[str],
+        file_name: str = "batch_confusion_matrix.png",
+    ) -> Path:
+        """Save a confusion matrix image for an ad-hoc batch of predictions."""
+        labels = sorted(set(y_true) | set(y_pred))
+        matrix = confusion_matrix(y_true, y_pred, labels=labels)
+
+        output_path = self.report_output_dir / file_name
+
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            matrix,
+            annot=True,
+            fmt="d",
+            xticklabels=labels,
+            yticklabels=labels,
+        )
+
+        plt.title("Batch Prediction Confusion Matrix")
+        plt.xlabel("Predicted Class")
+        plt.ylabel("Actual Class")
+        plt.xticks(rotation=45)
+        plt.yticks(rotation=0)
+        plt.tight_layout()
+        plt.savefig(output_path)
+        plt.close()
+
+        return output_path

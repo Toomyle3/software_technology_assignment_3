@@ -8,9 +8,11 @@ Stage 3: Implementation and Deployment
 """
 
 
+from pathlib import Path
+
 import pandas as pd
 
-from config import EDA_OUTPUT_DIR, MODEL_OUTPUT_DIR, REPORT_OUTPUT_DIR
+from config import EDA_OUTPUT_DIR, MODEL_OUTPUT_DIR, RAW_DATA_DIR, REPORT_OUTPUT_DIR
 from services.classifier_service import ClassifierService
 from services.dataset_indexer import DatasetIndexer
 from services.eda_service import EDAService
@@ -86,17 +88,56 @@ class WorkflowService:
         self.load_model()
         return self.classifier.predict_image(file_path)
 
-    def predict_images(self, file_paths: list[str]) -> list[tuple[str, str]]:
-        """Predict classes for multiple images. Returns (path, prediction_or_error)."""
+    def predict_images(self, file_paths: list[str]) -> dict:
+        """Predict classes for multiple images.
+
+        Returns a dict with:
+          - results: list of (path, true_label_or_None, prediction_or_error)
+          - accuracy: float in [0,1] over images with inferable truth, or None
+          - batch_cm_path: Path to saved batch confusion matrix, or None
+        """
         self.load_model()
-        results: list[tuple[str, str]] = []
+
+        # Known labels from the dataset folder layout (each sub-folder of
+        # RAW_DATA_DIR is one class label). Used to decide if an image's
+        # parent folder name is a real class label we can score against.
+        known_labels: set[str] = set()
+        if RAW_DATA_DIR.exists():
+            known_labels = {p.name for p in RAW_DATA_DIR.iterdir() if p.is_dir()}
+
+        results: list[tuple[str, str | None, str]] = []
+        y_true: list[str] = []
+        y_pred: list[str] = []
+
         for file_path in file_paths:
+            parent_name = Path(file_path).parent.name
+            true_label = parent_name if parent_name in known_labels else None
+
             try:
                 prediction = self.classifier.predict_image(file_path)
             except Exception as error:
-                prediction = f"ERROR: {error}"
-            results.append((file_path, prediction))
-        return results
+                results.append((file_path, true_label, f"ERROR: {error}"))
+                continue
+
+            results.append((file_path, true_label, prediction))
+            if true_label is not None:
+                y_true.append(true_label)
+                y_pred.append(prediction)
+
+        accuracy = None
+        batch_cm_path = None
+        if y_true:
+            correct = sum(1 for t, p in zip(y_true, y_pred) if t == p)
+            accuracy = correct / len(y_true)
+            batch_cm_path = self.classifier.save_batch_confusion_matrix(
+                y_true, y_pred
+            )
+
+        return {
+            "results": results,
+            "accuracy": accuracy,
+            "batch_cm_path": batch_cm_path,
+        }
 
     def run_full_pipeline(self) -> None:
         """Run the default Stage 1 + Stage 2 workflow in one call."""
