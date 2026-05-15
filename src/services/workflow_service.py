@@ -86,6 +86,18 @@ class WorkflowService:
         self.load_model()
         return self.classifier.predict_image(file_path)
 
+    def predict_images(self, file_paths: list[str]) -> list[tuple[str, str]]:
+        """Predict classes for multiple images. Returns (path, prediction_or_error)."""
+        self.load_model()
+        results: list[tuple[str, str]] = []
+        for file_path in file_paths:
+            try:
+                prediction = self.classifier.predict_image(file_path)
+            except Exception as error:
+                prediction = f"ERROR: {error}"
+            results.append((file_path, prediction))
+        return results
+
     def run_full_pipeline(self) -> None:
         """Run the default Stage 1 + Stage 2 workflow in one call."""
         self.show_summary()

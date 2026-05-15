@@ -109,6 +109,13 @@ class MacroinvertebrateApp:
 
         tk.Button(
             predict_frame,
+            text="Predict Multiple",
+            command=self.predict_multiple,
+            width=22,
+        ).pack(side="left", padx=5)
+
+        tk.Button(
+            predict_frame,
             text="View Confusion Matrix",
             command=self.view_confusion_matrix,
             width=22,
@@ -293,6 +300,52 @@ class MacroinvertebrateApp:
         except Exception as error:
             messagebox.showerror("Prediction failed", str(error))
             self._set_status("prediction failed")
+
+    def predict_multiple(self) -> None:
+        """Open a multi-select dialog and predict the class for each image."""
+        file_paths = filedialog.askopenfilenames(
+            title="Choose one or more macroinvertebrate images",
+            filetypes=[
+                ("Image files", "*.png *.jpg *.jpeg *.bmp"),
+                ("All files", "*.*"),
+            ],
+        )
+
+        # If the user pressed Cancel, do nothing.
+        if not file_paths:
+            return
+
+        self._set_status(f"predicting {len(file_paths)} image(s)...")
+        self._log(f"\nPredicting {len(file_paths)} image(s)...")
+
+        try:
+            results = self.workflow.predict_images(list(file_paths))
+        except FileNotFoundError:
+            messagebox.showerror(
+                "Model missing",
+                "No trained model found. Click 'Train Model' first.",
+            )
+            self._set_status("model missing")
+            return
+        except Exception as error:
+            messagebox.showerror("Prediction failed", str(error))
+            self._set_status("prediction failed")
+            return
+
+        # Show each result in the log area and count successes.
+        success_count = 0
+        for file_path, prediction in results:
+            name = Path(file_path).name
+            self._log(f"  {name}: {prediction}")
+            if not prediction.startswith("ERROR:"):
+                success_count += 1
+
+        self.result_label.config(
+            text=f"Predicted {success_count}/{len(results)} images"
+        )
+        self._set_status(
+            f"batch prediction completed ({success_count}/{len(results)} ok)"
+        )
 
     def view_confusion_matrix(self) -> None:
         """Open the saved confusion matrix image in a new window."""
